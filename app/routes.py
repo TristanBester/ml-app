@@ -2,7 +2,13 @@ import datetime
 import numpy as np
 from flask import request
 from app import app, db
-from app.models import ExperimalGroup, Request, Prediction, Label
+from app.models import (
+    ExperimalGroup,
+    Request,
+    Prediction,
+    Label,
+    MonitoringComparisonStatistics,
+)
 
 
 @app.route("/")
@@ -21,7 +27,7 @@ def data_sample(days):
     end_date = datetime.datetime.now()
     start_date = end_date - delta
 
-    exp_group = ExperimalGroup.query.filter_by(name="experiment").first()
+    exp_group = ExperimalGroup.query.filter_by(group_name="experiment").first()
     requests = (
         Request.query.filter(
             (Request.group_id == exp_group.group_id)
@@ -130,4 +136,30 @@ def route():
             db.session.add(label)
 
     db.session.commit()
+    return ""
+
+
+@app.route("/monitoring", methods=["POST"])
+def monitoring():
+    json = request.json
+
+    all_statistics = []
+
+    for r in json["statistics"]:
+        statistics = MonitoringComparisonStatistics(
+            num_days_sample_one=r["num_days_sample_one"],
+            num_days_sample_two=r["num_days_sample_two"],
+            feature_one_JS=r["feature_one_JS"],
+            feature_one_KS=r["feature_two_KS"],
+            feature_two_JS=r["feature_two_JS"],
+            feature_two_KS=r["feature_two_KS"],
+            feature_three_JS=r["feature_three_JS"],
+            feature_three_chi=r["feature_three_chi"],
+            feature_four_JS=r["feature_four_JS"],
+            feature_four_chi=r["feature_four_chi"],
+        )
+        all_statistics.append(statistics)
+    db.session.add_all(all_statistics)
+    db.session.commit()
+
     return ""

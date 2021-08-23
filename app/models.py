@@ -53,12 +53,13 @@ class Prediction(db.Model):
     request_id = db.Column(db.Integer, db.ForeignKey("request.request_id"))
 
 
-class MonitoringSample(db.Model):
-    __tablename__ = "monitoring_sample"
+class MonitoringComparisonStatistics(db.Model):
+    __tablename__ = "monitoring_comparison_statistics"
 
-    sample_id = db.Column(db.Integer, primary_key=True)
-    start_date = db.Column(db.Date)
-    end_date = db.Column(db.Date)
+    comparison_id = db.Column(db.Integer, primary_key=True)
+    comparison_date = db.Column(db.Date, default=datetime.now())
+    num_days_sample_one = db.Column(db.Integer)
+    num_days_sample_two = db.Column(db.Integer)
     feature_one_JS = db.Column(db.Float)
     feature_one_KS = db.Column(db.Float)
     feature_two_JS = db.Column(db.Float)
