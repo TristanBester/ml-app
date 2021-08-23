@@ -1,0 +1,11 @@
+# Database
+*.db 
+
+# Environment variables
+.flaskenv
+
+# Virtual environment
+venv/
+
+# Cache files
+__pycache__/
